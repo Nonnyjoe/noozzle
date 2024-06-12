@@ -14,8 +14,7 @@ export const extractData = (payload: Hex): decodedPayload => {
     sender_address: parsedPayload.sender_address as Address,
     sender_payload: parsedPayload.sender_payload as Hex,
   };
-  console.log(decoded);
-
+  
   return decoded;
 };
 
