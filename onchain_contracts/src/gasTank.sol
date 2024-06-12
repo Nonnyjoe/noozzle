@@ -28,6 +28,11 @@ contract GasTank {
         _;
     }
 
+    modifier onlyRelayer() {
+        require(msg.sender == Relayer, "Unauthorized caller");
+        _;
+    }
+
     constructor (address admin, address relayer, address gasTankFactory, address _CTSIToken, address dappAddress) {
         Admin = admin;
         Relayer = relayer;
@@ -53,7 +58,7 @@ contract GasTank {
         return token.balanceOf(address(this));
     }
 
-    function chargeGasFees(uint256 amount, uint256 transactionID, address txCaller) external {
+    function chargeGasFees(uint256 amount, uint256 transactionID, address txCaller) onlyRelayer() external {
         require(gasTankBalance() >= amount, "INSUFFICINET BALLANCE TO COVER TX FEES");
 
         newTransaction memory newTx;
