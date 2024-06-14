@@ -30,6 +30,7 @@ contract GasTankFactory {
    
 
    function createGasTank(address contractAddress) external {
+        require(contractAddress != address(0), "Address must be a valid address");
         GasTank newGasTank = new GasTank(msg.sender, Relayer, address(this), CTSIToken, contractAddress);
         gasTankDetails memory newTankDetails;
 
