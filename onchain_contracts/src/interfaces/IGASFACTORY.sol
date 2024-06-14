@@ -18,7 +18,7 @@ interface IGasTankFactory {
     function allGasTanks(uint256 index) external view returns (address);
     function userToDappAddress(address user, uint256 index) external view returns (address);
     function dappAddressToGasTankDetails(address contractAddress) external view returns (uint256, address, address, uint256);
-
+    function hasAGasTank(address userAddress) external view returns(bool);
     function createGasTank(address contractAddress) external;
     function getGatTankAddress(address contractAddress) external view returns (address);
 }

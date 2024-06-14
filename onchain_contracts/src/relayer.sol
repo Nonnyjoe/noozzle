@@ -38,12 +38,18 @@ contract Relayer {
     constructor (address InputBoxAddr, address _CTSI_token) {
         InputBox = IInputBox(InputBoxAddr);
         CTSIToken = _CTSI_token;
+        admin = msg.sender;
     }
 
     function initializeContract(address _gasFactory) external onlyAdmin() {
-        require(isInitialized == false, "ALREADY INITIALIZED");
+        // require(isInitialized == false, "ALREADY INITIALIZED");
         gasFactory = IGasTankFactory(_gasFactory);
         isInitialized = true;
+    }
+
+    function changeInputBoxAddress(address inputbox) external onlyAdmin() {
+        require(inputbox != address(0), "address zero is not allowed");
+        InputBox = IInputBox(inputbox);
     }
 
     function registerMessengerAddress(address messenger) onlyAdmin() external {

@@ -51,5 +51,14 @@ contract GasTankFactory {
         return dappAddressToGasTankDetails[contractAddress].tankAddress;
     }
 
+    function hasAGasTank(address userAddress) public view returns(bool) {
+        address[] memory userTanks = userToDappAddress[userAddress];
+        if (userTanks.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 

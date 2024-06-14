@@ -1,5 +1,7 @@
 const http = require('http');
+const cluster = require('cluster');
 const app = require('./app');
+const os = require('os');
 
 const PORT = process.env.PORT || 6000;
 const server = http.createServer(app);
@@ -10,4 +12,14 @@ async function startServer() {
     });
 }
 
-startServer();
+if (cluster.isMaster) {
+    console.log(`Master process has started........`);
+    const NUM_WORKERS = os.cpus().length;
+    console.log(`Number of workers is: ${NUM_WORKERS}`);
+    for (let i = 0; i < NUM_WORKERS; i++) {
+        cluster.fork();
+    }
+} else {
+    console.log(`Worker process has started........`);
+    startServer();
+}

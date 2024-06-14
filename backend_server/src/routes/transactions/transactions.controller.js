@@ -2,6 +2,7 @@ const {ethers} = require('ethers');
 require('dotenv').config();
 
 async function httpAddnewTransaction(req, res) {
+    console.log(`process running on: ${process.pid}`);
     let payload = req.body;
 
     if (!payload.message || !payload.signature || !payload.signer) {
@@ -10,18 +11,26 @@ async function httpAddnewTransaction(req, res) {
         });
     }
 
-    let realSigner = await verifySignature(payload);
-    console.log(realSigner);
-    console.log(JSON.stringify(payload.message));
+    try {
+        let realSigner = await verifySignature(payload);
+        console.log(realSigner);
+        console.log(JSON.stringify(payload.message));
+    
+        if (realSigner!== payload.signer) {
+            return res.status(400).json({
+                message: 'Invalid payload signer/ signature'
+            });
+        }
+    
+        let newTx = await buildNewTx(payload);
+        let status = await submitTransaction(newTx);
+        console.log(`Transaction status is equal to: ${status}`);
 
-    if (realSigner!== payload.signer) {
-        return res.status(400).json({
-            message: 'Invalid payload signer/ signature'
+    } catch (err) {
+        return res.status(500).json({
+            message: err
         });
     }
-
-    let newTx = await buildNewTx(payload);
-    let status = submitTransaction(newTx);
 
 
     res.status(200).json({
@@ -70,17 +79,24 @@ async function submitTransaction(newTx) {
         throw new Error('Private key not found in .env file');
     }
 
-    const signer = new ethers.Wallet(privateKey, provider);
-    const abi = [
-        "function relayInput(address target, uint256 fee, address caller, bytes memory payload) external returns(bool)"
-    ];
-    let txHex = await objectToHex(newTx);
-    console.log(`Hex representation is: ${txHex}`);
-    const contract = new ethers.Contract(relayerAddress, abi, signer);
-    // let tx = await contract.relayInput(newTx.target, fee, newTx.signer, newTx, {gasLimit: 1000000});
-    let tx = await contract.relayInput(newTx.target, fee, newTx.signer, txHex, {gasLimit: 1000000});
-    const receipt = await tx.wait();
-    console.log(tx);
+    try {
+        const signer = new ethers.Wallet(privateKey, provider);
+        const abi = [
+            "function relayInput(address target, uint256 fee, address caller, bytes memory payload) external returns(bool)"
+        ];
+        let txHex = await objectToHex(newTx);
+        console.log(`Hex representation is: ${txHex}`);
+        const contract = new ethers.Contract(relayerAddress, abi, signer);
+        // let tx = await contract.relayInput(newTx.target, fee, newTx.signer, newTx, {gasLimit: 1000000});
+        let tx = await contract.relayInput(newTx.target, fee, newTx.signer, txHex, {gasLimit: 1000000});
+        const receipt = await tx.wait();
+        console.log(receipt);
+        return receipt.status;
+    } catch(err) {
+        console.log(err);
+        return false;
+    }
+
 }
 
 async function objectToHex(obj) {
