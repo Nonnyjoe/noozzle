@@ -44,11 +44,11 @@ interface VerifyCertificateProps {
 
         return (
             <div>
-                <div className='d flex flex-row gap-9 mb-5'>
-                    <div>{txIdd ? `${(txIdd).toString()}.0`: '-----'}</div>
-                    <div>{txFee ? `${(txFee / BigInt(1000000000000000000)).toString()} CTSI`: '-----'}</div>
-                    <div>{txCaller ? `${txCaller.toString().slice(0,10)} ...... ${txCaller.toString().slice(0,10)}`: '------'}</div>
-                    <div>{txRelayer ? `${txRelayer.toString().slice(0,10)} ...... ${txRelayer.toString().slice(0,10)}`: '------'}</div>
+                <div className='d flex flex-row gap-3 mb-3 text-left'>
+                    <div className='w-1/12'>{txIdd ? `${(txIdd).toString()}.0`: '-----'}</div>
+                    <div className='w-2/12'>{txFee ? `${(txFee / BigInt(1000000000000000000)).toString()} CTSI`: '-----'}</div>
+                    <div className='w-4/12'>{txCaller ? `${txCaller.toString().slice(0,8)} ...... ${txCaller.toString().slice(-8)}`: '------'}</div>
+                    <div className='w-4/12'>{txRelayer ? `${txRelayer.toString().slice(0,8)} ...... ${txRelayer.toString().slice(-8)}`: '------'}</div>
                 </div>
             </div>
         );

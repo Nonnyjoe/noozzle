@@ -157,7 +157,13 @@ export function VerifyCertificate() {
                 <h2 className="mx-auto max-w-4xl font-display text-4xl font-medium tracking-tight text-slate-900 ">
                     TRANSACTION PROCESSED
                 </h2> 
-                    <div className='flex flex-col gap-2 pt-10 pb-20 text-center'>
+                    <div className='d flex flex-row pt-10 gap-3 text-cyan-600'>
+                        <div className=' w-1/12'>Tx Id</div>
+                        <div className=' w-2/12'>Tx Fee</div>
+                        <div className=' w-4/12'>Tx Origin</div>
+                        <div className=' w-4/12'>Tx Messanger</div>
+                    </div>            
+                    <div className='flex flex-col gap-2  pb-20 text-center'>
                         {txCount ? transactions.map((txID) => (
                             <GetTransactionData key={txID} dappAddress={dappAddress as string} txId={txID} />
                         )) : `No Metatransactions relayed yet......`}
