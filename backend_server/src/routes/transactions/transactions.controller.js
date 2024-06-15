@@ -11,6 +11,8 @@ async function httpAddnewTransaction(req, res) {
         });
     }
 
+    console.log(`New Payload is ${JSON.stringify(req.body)}`)
+
     try {
         let realSigner = await verifySignature(payload);
         console.log(realSigner);
@@ -59,9 +61,9 @@ async function buildNewTx(payload) {
 }
 
 async function verifySignature(payload) {
-    // console.log(`payload is: ${JSON.stringify(payload)}`);
+    console.log(`payload is: ${JSON.stringify(payload.message)}`);
     try {
-        let realSigner = await ethers.utils.verifyMessage(JSON.stringify(payload.message), payload.signature);
+        let realSigner = await ethers.utils.verifyMessage(payload.message, payload.signature);
         return realSigner;
     } catch (err) {
         console.log(err);

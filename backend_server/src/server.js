@@ -1,10 +1,18 @@
-const http = require('http');
+const https = require('https');
 const cluster = require('cluster');
 const app = require('./app');
 const os = require('os');
+const fs = require('fs');
 
-const PORT = process.env.PORT || 6000;
-const server = http.createServer(app);
+const PORT = process.env.PORT || 8000;
+
+const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem'),
+};
+
+const server = https.createServer(options, app);
+// const server = https.createServer(app);
 
 async function startServer() {
     server.listen(PORT, () => {
