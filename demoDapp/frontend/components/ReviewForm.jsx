@@ -81,9 +81,7 @@ const ReviewForm = () => {
 
     async function sendTransaction(data) {
         try {
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
             const response = await axios.post('https://noozzle-lvaf.vercel.app/transactions', data, {
-                // httpsAgent: agent,
                 headers: {
                     'Content-Type': 'application/json'
                 }

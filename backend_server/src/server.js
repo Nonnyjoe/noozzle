@@ -11,7 +11,7 @@ const options = {
     cert: fs.readFileSync('cert.pem'),
 };
 
-const server = https.createServer(options, app);
+const server = https.createServer(app);
 // const server = https.createServer(app);
 
 async function startServer() {
