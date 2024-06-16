@@ -1,4 +1,3 @@
-# JavaScript DApp Template
+# Noozzle Demo
 
-This is a template for JavaScript Cartesi DApps. It uses node to execute the backend application.
-The application entrypoint is the `src/index.js` file. It is bundled with [esbuild](https://esbuild.github.io), but any bundler can be used.
+This is a demo application to showcase the [Noozzle](../cartesi_library/README.md) package and the [Relayer](/onchain_contracts/README.md) on-chain functionality
