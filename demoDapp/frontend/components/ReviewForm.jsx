@@ -5,38 +5,59 @@ import { ethers } from "ethers";
 import dappAddress from '../utils/dappAddress';
 import axios from 'axios';
 import https from 'https';
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ReviewForm = () => {
+  const showToastSuccess = (message) => {
+    toast.success(message, {});
+  };
+
+  const showToastInfo = (message) => {
+    toast.info(message, {});
+  };
+
+  const showToastError = (message) => {
+    toast.error(message, {  });
+  };
+
+
     const [review, setReview] = useState('');
     const [submiting, setSubmiting] = useState(false);
-    
+   
 
     const agent = new https.Agent({
         rejectUnauthorized: false
     });
 
     const handleSubmit = async(e) => {
+
       e.preventDefault()
       setSubmiting(true);
-
       // Handle form submission logic here
       let message = {
         data: review,
         target: dappAddress
       };
+      try {
+        let {address, signature} = await signMessage((message));
+        let finalPayload = createMessage(message, dappAddress, address, signature);
+        console.log(finalPayload);
+        showToastInfo('Sending transaction to relayer....');
 
-      let {address, signature} = await signMessage((message));
-      let finalPayload = createMessage(message, dappAddress, address, signature);
-      console.log(finalPayload);
+        let realSigner = await ethers.utils.verifyMessage(finalPayload.message, finalPayload.signature);
 
-      let realSigner = await ethers.utils.verifyMessage(finalPayload.message, finalPayload.signature);
+        console.log(`Realsigner is: ${realSigner}`);
+        await sendTransaction(finalPayload);
 
-      console.log(`Realsigner is: ${realSigner}`);
-      await sendTransaction(finalPayload);
-
-      setReview('')
-      setSubmiting(false);
+        setReview('')
+        setSubmiting(false);
+        showToastSuccess('Transaction relayed successfully');
+      } catch (err) {
+        console.log(err.message);
+        setSubmiting(false);
+        // showToastError(err.message);
+      }
     }
 
 
@@ -58,6 +79,7 @@ const ReviewForm = () => {
             // console.log(`Data to be sent is: ${JSON.stringify({ message, signature, address })}`);
             return {address, signature};
           } catch (err) {
+            showToastError(err.message);
             console.log(err.message);
             setSubmiting(false);
           }
@@ -81,7 +103,7 @@ const ReviewForm = () => {
 
     async function sendTransaction(data) {
         try {
-            const response = await axios.post('https://noozzle-lvaf.vercel.app/transactions', data, {
+            const response = await axios.post('https://noozzle.onrender.com/transactions', data, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -92,6 +114,29 @@ const ReviewForm = () => {
         }
     }
 
+
+    const Spinner = () => (
+      <svg
+        className="animate-spin h-5 w-5 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        ></path>
+      </svg>
+    );
 
 
   return (
@@ -116,9 +161,9 @@ const ReviewForm = () => {
             <button
             type="submit"
             disabled={submiting}
-            className=" mt-[-7px] inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:bg-gray-600"
+            className=" mt-[-7px] inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:bg-gray-500 disabled:h-12"
             >
-            <PaperAirplaneIcon className="h-8 w-5 text-white" aria-hidden="true" />
+              {submiting ? <Spinner /> : <PaperAirplaneIcon className="h-8 w-5 text-white" aria-hidden="true" />}
             </button>
         </div>
       </form>

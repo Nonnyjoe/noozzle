@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { Container } from './Container';
+import { Container } from '../components/Container';
 import factory_abi from '../utils/factory_abi.json';
 import factory_address from '../utils/factory_address';
 import CTSI_abi from '../utils/CTSI_abi.json';
@@ -23,16 +23,25 @@ export function CreateCertificate() {
     const [addr, setAddr] = useState("");
     const [hasAccount, sethasAccount] = useState<Boolean>(false);
     const [connectedAddr, setConnectedAddr] = useState("");
+    const [creating, setCreating] = useState<Boolean>(false);
+    
 
 
     const { address } = useAccount();
 
 
     const CreateCert = async () => {
-        console.log("creating gas Tank");
-        console.log(`DappAddress is ${dAppAddress}`);
-        await createCertWrite?.();
-        console.log("Gas tank created successfully");
+        try {
+            setCreating(true);
+            console.log("creating gas Tank");
+            console.log(`DappAddress is ${dAppAddress}`);
+            await createCertWrite?.();
+            console.log("Gas tank created successfully");
+            setCreating(false);
+        } catch(err) {
+            console.log(err);
+            setCreating(false);
+        }
     };
 
     const { config: CreateCertConfig } = usePrepareContractWrite({
@@ -96,6 +105,32 @@ export function CreateCertificate() {
     }, [address, addressCreated, connectedAddr, tankAllowance]);
 
 
+
+    const Spinner = () => (
+        <svg
+          className="animate-spin h-5 w-5 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            className="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            strokeWidth="4"
+          ></circle>
+          <path
+            className="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      );
+
+
+
     return (
         <div className=' pt-24'>
            {hasAccount || addressCreated ? (<Container className={clsx("pt-20 pb-16 lg:pt-12")}>
@@ -132,7 +167,9 @@ export function CreateCertificate() {
                     </div>
                 </div>
                 <Button type='button' className='max-w-max ml-auto' onClick={CreateCert}>
-                    Create Gas Tank</Button>
+                { creating ? <Spinner /> : `Create Gas Tank`    }   
+                
+                </Button>
             </form>
         </Container>
         )}
