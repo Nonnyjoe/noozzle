@@ -1,12 +1,24 @@
 // XXX even though ethers is not used in the code below, it's very likely
 // it will be used by any DApp, so we are already including it here
 const { ethers } = require("ethers");
+const { extractData } = require("noozzle");
 
 const rollup_server = process.env.ROLLUP_HTTP_SERVER_URL;
 console.log("HTTP rollup_server url is " + rollup_server);
 
+
+
 async function handle_advance(data) {
   console.log("Received advance request data " + JSON.stringify(data));
+
+  // mini-sample using the extractData from noozzle
+
+  const output = extractData(data.payload);
+
+  
+
+  console.log(messenger, message);
+
   return "accept";
 }
 
