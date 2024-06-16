@@ -1,22 +1,56 @@
 import { hexToString } from "viem";
 import type { Address, Hex } from "viem";
 
-type decodedPayload = {
-  sender_address: Address;
-  sender_payload: Hex;
+type DecodedPayload = {
+  messenger: Address;
+  message: string;
 };
 
-export const extractData = (payload: Hex): decodedPayload => {
-  // Assuming our payload object is formatted as sender_address:sender_payload
-  const hexString = hexToString(payload);
-  const parsedPayload = JSON.parse(hexString);
-  let decoded: decodedPayload = {
-    sender_address: parsedPayload.sender_address as Address,
-    sender_payload: parsedPayload.sender_payload as Hex,
-  };
-  
-  return decoded;
+/**
+ * Extracts and decodes data from a hex-encoded payload.
+ *
+ * @param {Hex} payload - The hex-encoded string to decode.
+ * @returns {DecodedPayload} The decoded payload containing the messenger and message fields.
+ * @throws Will throw an error if the payload format is invalid, conversion fails, or JSON parsing fails.
+ */
+export const extractData = (payload: Hex): DecodedPayload => {
+  try {
+    // Ensure the payload starts with '0x'
+    if (!payload.startsWith('0x')) {
+      throw new Error("Invalid payload format: Payload must start with '0x'");
+    }
+
+    // Convert hex to string
+    let hexString: string;
+    try {
+      hexString = hexToString(payload);
+    } catch (error) {
+      throw new Error(`Failed to convert hex to string: ${error}`);
+    }
+
+    // Parse JSON
+    let parsedPayload: any;
+    try {
+      parsedPayload = JSON.parse(hexString);
+    } catch (error) {
+      throw new Error(`Failed to parse JSON: ${error}`);
+    }
+
+    // Validate parsed payload
+    if (!parsedPayload.messenger || !parsedPayload.message) {
+      throw new Error("Invalid parsed payload: Missing 'messenger' or 'message'");
+    }
+
+    // Create decoded payload
+    const decoded: DecodedPayload = {
+      messenger: parsedPayload.messenger as Address,
+      message: parsedPayload.message as string,
+    };
+
+    return decoded;
+
+  } catch (error) {
+    console.error(`Error extracting data: ${error}`);
+    throw error;  // Re-throw the error after logging it
+  }
 };
-
-
-// extractData(`0x7b2273656e6465725f61646472657373223a22307831323334353637383930616263646566222c202273656e6465725f7061796c6f6164223a223078616263646566227d`);
