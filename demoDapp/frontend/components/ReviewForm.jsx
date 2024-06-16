@@ -158,13 +158,13 @@ const ReviewForm = () => {
           />
         </div>
         <div className=''>
-            <button
+          <button
             type="submit"
             disabled={submiting}
             className=" mt-[-7px] inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:bg-gray-500 disabled:h-12"
             >
               {submiting ? <Spinner /> : <PaperAirplaneIcon className="h-8 w-5 text-white" aria-hidden="true" />}
-            </button>
+          </button>
         </div>
       </form>
     </div>

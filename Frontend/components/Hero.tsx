@@ -23,7 +23,7 @@ export function Hero() {
                 to your dApp on Cartesi.
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700">
-                Experience the tru power of web3 onboarding by enabling your users interact with your dApps for free.
+                Experience the true power of web3 onboarding by enabling your users interact with your dApps for free.
             </p>
             <div className="mt-10 flex justify-center space-x-6">
                 <ButtonLink href="/create">Create Gas Tank</ButtonLink>

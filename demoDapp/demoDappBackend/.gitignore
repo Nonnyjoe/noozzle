@@ -1,3 +1,4 @@
 .cartesi
 /dist
 /node_modules
+fly.toml
