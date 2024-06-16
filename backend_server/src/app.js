@@ -5,7 +5,11 @@ const transactionsRouter = require('./routes/transactions/transactions.router');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'https://noozle-review.vercel.app/', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'] 
+  }));
 app.use(morgan('combined'));
 app.use(express.json());
 
