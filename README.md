@@ -80,4 +80,3 @@ We would like to thank the Cartesi community for their support and the Chainlink
 ---
 
 Feel free to open an issue if you have any questions or need further assistance.
-
